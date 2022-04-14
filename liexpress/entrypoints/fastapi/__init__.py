@@ -1,7 +1,7 @@
 import logging
 import os
 from http import HTTPStatus
-from typing import List
+from typing import List, Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Security, status
 from fastapi.openapi.models import APIKey
@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
 
 from liexpress.bootstrap import configure_inject
+from liexpress.domain.actions.products_provider import ProductsProvider
+from liexpress.entrypoints.fastapi.models import PlainProductResponse
 
 app = FastAPI(root_path=os.getenv("ROOT_PATH", ""))
 
@@ -40,3 +42,28 @@ async def exception_handler(request: Request, exc: Exception):
             "ErrorMessage": f"{exc}",
         },
     )
+
+
+@app.get(
+    "/reservation/{reservation_id}/products/",
+    response_model=List[PlainProductResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get all products",
+)
+async def get_reservations_products(
+    reservation_id: int,
+    relevance: Optional[str] = "date",
+    active_products: Optional[bool] = True,
+    api_key: APIKey = Depends(verify_api_key),
+):
+    products = ProductsProvider()(reservation_id, relevance, active_products)
+    return [
+        PlainProductResponse(
+            product_id=p.product_id,
+            name=p.name.capitalize(),
+            description=p.description,
+            date_added=p.date_added,
+            price=p.price,
+        )
+        for p in products
+    ]
