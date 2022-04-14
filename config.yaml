@@ -1,4 +1,4 @@
 products:
   order_criteria_supported:
-    - date
+    - date_added
     - most_popular

@@ -19,7 +19,7 @@ class InMemoryDataProvider(DataProvider):
         try:
             reservation_products = self._products[reservation_id]
         except KeyError:
-            raise ReservationIdNotFound(f"{reservation_id} not found")
+            raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
 
         if active:
             return list(filter(lambda x: x.active == active, reservation_products))

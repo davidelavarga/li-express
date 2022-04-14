@@ -44,7 +44,7 @@ class ProductSorter:
     def _check_order_criteria(self, order_by: str):
         if order_by not in self._supported_criteria:
             raise OrderCriteriaNotSupported(
-                f"{order_by} is not supported. Only {self._supported_criteria}"
+                f"'{order_by}' order criteria is not supported. Only {self._supported_criteria}"
             )
 
     def __call__(self, order_by: str) -> List[Product]:

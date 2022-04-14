@@ -10,6 +10,7 @@ from fastapi.security import APIKeyHeader
 
 from liexpress.bootstrap import configure_inject
 from liexpress.domain.actions.products_provider import ProductsProvider
+from liexpress.domain.models.exceptions import InputException
 from liexpress.entrypoints.fastapi.models import PlainProductResponse
 
 app = FastAPI(root_path=os.getenv("ROOT_PATH", ""))
@@ -44,6 +45,17 @@ async def exception_handler(request: Request, exc: Exception):
     )
 
 
+@app.exception_handler(InputException)
+async def input_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=HTTPStatus.BAD_REQUEST.value,
+        content={
+            "status": f"{HTTPStatus.BAD_REQUEST.name}",
+            "ErrorMessage": f"{exc}",
+        },
+    )
+
+
 @app.get(
     "/reservation/{reservation_id}/products/",
     response_model=List[PlainProductResponse],
@@ -52,7 +64,7 @@ async def exception_handler(request: Request, exc: Exception):
 )
 async def get_reservations_products(
     reservation_id: int,
-    relevance: Optional[str] = "date",
+    relevance: str,
     active_products: Optional[bool] = True,
     api_key: APIKey = Depends(verify_api_key),
 ):
