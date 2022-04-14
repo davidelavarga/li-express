@@ -1,14 +1,17 @@
 import logging
 import os
 from http import HTTPStatus
-from typing import List
+from typing import List, Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Security, status
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security, status
 from fastapi.openapi.models import APIKey
 from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
 
 from liexpress.bootstrap import configure_inject
+from liexpress.domain.actions.products_provider import ProductsProvider
+from liexpress.domain.models.exceptions import InputException
+from liexpress.entrypoints.fastapi.models import PlainProductResponse
 
 app = FastAPI(root_path=os.getenv("ROOT_PATH", ""))
 
@@ -40,3 +43,42 @@ async def exception_handler(request: Request, exc: Exception):
             "ErrorMessage": f"{exc}",
         },
     )
+
+
+@app.exception_handler(InputException)
+async def input_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=HTTPStatus.BAD_REQUEST.value,
+        content={
+            "status": f"{HTTPStatus.BAD_REQUEST.name}",
+            "ErrorMessage": f"{exc}",
+        },
+    )
+
+
+@app.get(
+    "/reservation/{reservation_id}/products/",
+    response_model=List[PlainProductResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get products for the given reservation_id",
+)
+async def get_reservation_products(
+    reservation_id: int,
+    relevance: str = Query(..., description="Ways to order the products"),
+    active_products: Optional[bool] = Query(
+        True,
+        description=" If active=true return only active product, return all products otherwise",
+    ),
+    api_key: APIKey = Depends(verify_api_key),
+):
+    products = ProductsProvider()(reservation_id, relevance, active_products)
+    return [
+        PlainProductResponse(
+            product_id=p.product_id,
+            name=p.name.capitalize(),
+            description=p.description,
+            date_added=p.date_added,
+            price=p.price,
+        )
+        for p in products
+    ]

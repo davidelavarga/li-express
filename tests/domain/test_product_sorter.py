@@ -1,38 +1,21 @@
 from datetime import date
 from typing import List
 
-from liexpress.domain.models.exceptions import ReservationIdNotFound
-from liexpress.domain.models.products import Configuration, Product
-from liexpress.domain.ports import DataProvider
+import pytest
+
+from liexpress.domain.models.exceptions import OrderCriteriaNotSupported
+from liexpress.domain.models.products import Configuration, Product, ProductSorter
 
 
-class InMemoryDataProvider(DataProvider):
-    def __init__(self):
-        self._products = self._in_memory_products()
-
-    def get_products(self, reservation_id: int, active: bool = True) -> List[Product]:
-        """
-        Get products for the given reservation_id.
-        If active=True return only active product,
-        return all products otherwise.
-        """
-        try:
-            reservation_products = self._products[reservation_id]
-        except KeyError:
-            raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
-
-        if active:
-            return list(filter(lambda x: x.active == active, reservation_products))
-
-        return reservation_products
-
-    def _in_memory_products(self) -> List[Product]:
-        surf = Product(
+@pytest.fixture
+def products() -> List[Product]:
+    return [
+        Product(
             product_id=0,
             name="surf",
             description="Amazing surf classes.",
             price=20.0,
-            date_added=date(2022, 4, 1),
+            date_added=date(2022, 4, 12),
             orders=2,
             configuration=[
                 Configuration(name="date", type="date"),
@@ -40,8 +23,8 @@ class InMemoryDataProvider(DataProvider):
                 Configuration(name="additional notes", type="string"),
             ],
             active=True,
-        )
-        brunch = Product(
+        ),
+        Product(
             product_id=1,
             name="brunch",
             description="Delicious homemade brunch.",
@@ -53,14 +36,14 @@ class InMemoryDataProvider(DataProvider):
                 Configuration(name="brunch type", type="string"),
             ],
             active=True,
-        )
-        museum = Product(
+        ),
+        Product(
             product_id=2,
             name="natural science museum",
             description="Natural Science Museum",
             price=5.0,
             date_added=date(2022, 4, 10),
-            orders=5,
+            orders=1,
             configuration=[
                 Configuration(name="date", type="date"),
                 Configuration(name="time", type="time"),
@@ -68,5 +51,22 @@ class InMemoryDataProvider(DataProvider):
                 Configuration(name="children", type="int"),
             ],
             active=False,
-        )
-        return {0: [surf, brunch, museum], 1: [brunch, museum]}
+        ),
+    ]
+
+
+def test_sort_products_by_date(products: List[Product]):
+    sorted_products = ProductSorter(products)("date")
+    sorted_products_id = [p.product_id for p in sorted_products]
+    assert sorted_products_id == [1, 2, 0]
+
+
+def test_sort_products_by_n_order(products: List[Product]):
+    sorted_products = ProductSorter(products)("most_popular")
+    sorted_products_id = [p.product_id for p in sorted_products]
+    assert sorted_products_id == [1, 0, 2]
+
+
+def test_sort_products_criteria_not_supported(products: List[Product]):
+    with pytest.raises(OrderCriteriaNotSupported):
+        ProductSorter(products)("fail")
