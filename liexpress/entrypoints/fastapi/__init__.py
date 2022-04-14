@@ -3,7 +3,7 @@ import os
 from http import HTTPStatus
 from typing import List, Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Security, status
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security, status
 from fastapi.openapi.models import APIKey
 from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
@@ -60,12 +60,15 @@ async def input_exception_handler(request: Request, exc: Exception):
     "/reservation/{reservation_id}/products/",
     response_model=List[PlainProductResponse],
     status_code=status.HTTP_200_OK,
-    summary="Get all products",
+    summary="Get products for the given reservation_id",
 )
-async def get_reservations_products(
+async def get_reservation_products(
     reservation_id: int,
-    relevance: str,
-    active_products: Optional[bool] = True,
+    relevance: str = Query(..., description="Ways to order the products"),
+    active_products: Optional[bool] = Query(
+        True,
+        description=" If active=true return only active product, return all products otherwise",
+    ),
     api_key: APIKey = Depends(verify_api_key),
 ):
     products = ProductsProvider()(reservation_id, relevance, active_products)
