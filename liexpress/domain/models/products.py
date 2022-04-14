@@ -3,7 +3,6 @@ from datetime import date
 from typing import List
 
 from liexpress.domain.models.exceptions import OrderCriteriaNotSupported
-from liexpress.utils.config_loader import get_config
 
 
 @dataclass
@@ -29,9 +28,8 @@ class ProductSorter:
         self,
         products: List[Product],
     ):
-        self._config = get_config()["products"]
         self._products = products
-        self._supported_criteria = self._config["order_criteria_supported"]
+        self._supported_criteria = list(self._order_rules().keys())
 
     def _order_rules(self):
         return {
