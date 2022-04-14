@@ -1,0 +1,4 @@
+products:
+  order_criteria_supported:
+    - date
+    - most_popular

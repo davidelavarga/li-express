@@ -1,0 +1,2 @@
+class OrderCriteriaNotSupported(Exception):
+    pass

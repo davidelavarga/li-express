@@ -2,6 +2,9 @@ from dataclasses import dataclass
 from datetime import date
 from typing import List
 
+from liexpress.domain.models.exceptions import OrderCriteriaNotSupported
+from liexpress.utils.config_loader import get_config
+
 
 @dataclass
 class Configuration:
@@ -19,3 +22,31 @@ class Product:
     orders: int
     configuration: List[Configuration]
     active: bool = True
+
+
+class ProductSorter:
+    def __init__(
+        self,
+        products: List[Product],
+    ):
+        self._config = get_config()["products"]
+        self._products = products
+        self._supported_criteria = self._config["order_criteria_supported"]
+
+    def _order_rules(self):
+        return {
+            "date": sorted(self._products, key=lambda x: x.date_added),
+            "most_popular": sorted(
+                self._products, key=lambda x: x.orders, reverse=True
+            ),
+        }
+
+    def _check_order_criteria(self, order_by: str):
+        if order_by not in self._supported_criteria:
+            raise OrderCriteriaNotSupported(
+                f"{order_by} is not supported. Only {self._supported_criteria}"
+            )
+
+    def __call__(self, order_by: str) -> List[Product]:
+        self._check_order_criteria(order_by)
+        return self._order_rules()[order_by]
