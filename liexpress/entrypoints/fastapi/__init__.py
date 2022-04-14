@@ -62,7 +62,7 @@ async def input_exception_handler(request: Request, exc: Exception):
 
 
 @app.get(
-    "/reservation/{reservation_id}/products/",
+    "/reservations/{reservation_id}/products/",
     response_model=List[PlainProductResponse],
     status_code=status.HTTP_200_OK,
     summary="Get products for the given reservation_id",
@@ -90,7 +90,7 @@ async def get_products(
 
 
 @app.get(
-    "/reservation/{reservation_id}/products/{product_id}",
+    "/reservations/{reservation_id}/products/{product_id}",
     response_model=DetailProductResponse,
     status_code=status.HTTP_200_OK,
     summary="Get product detail for the given reservation_id, including place holders",
