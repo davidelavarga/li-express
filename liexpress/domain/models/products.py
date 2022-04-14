@@ -19,7 +19,7 @@ class Product:
     price: float
     date_added: date
     orders: int
-    configuration: List[Configuration]
+    configurations: List[Configuration]
     active: bool = True
 
 

@@ -9,9 +9,14 @@ from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
 
 from liexpress.bootstrap import configure_inject
-from liexpress.domain.actions.products_provider import ProductsProvider
+from liexpress.domain.actions.product_detail import ProductDetail
+from liexpress.domain.actions.products_list import ProductList
 from liexpress.domain.models.exceptions import InputException
-from liexpress.entrypoints.fastapi.models import PlainProductResponse
+from liexpress.entrypoints.fastapi.models import (
+    Configuration,
+    DetailProductResponse,
+    PlainProductResponse,
+)
 
 app = FastAPI(root_path=os.getenv("ROOT_PATH", ""))
 
@@ -62,7 +67,7 @@ async def input_exception_handler(request: Request, exc: Exception):
     status_code=status.HTTP_200_OK,
     summary="Get products for the given reservation_id",
 )
-async def get_reservation_products(
+async def get_products(
     reservation_id: int,
     relevance: str = Query(..., description="Ways to order the products"),
     active_products: Optional[bool] = Query(
@@ -71,7 +76,7 @@ async def get_reservation_products(
     ),
     api_key: APIKey = Depends(verify_api_key),
 ):
-    products = ProductsProvider()(reservation_id, relevance, active_products)
+    products = ProductList()(reservation_id, relevance, active_products)
     return [
         PlainProductResponse(
             product_id=p.product_id,
@@ -82,3 +87,28 @@ async def get_reservation_products(
         )
         for p in products
     ]
+
+
+@app.get(
+    "/reservation/{reservation_id}/products/{product_id}",
+    response_model=DetailProductResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get product detail for the given reservation_id, including place holders",
+)
+async def get_product_detal(
+    reservation_id: int,
+    product_id: int,
+    api_key: APIKey = Depends(verify_api_key),
+):
+    p = ProductDetail()(reservation_id, product_id)
+
+    return DetailProductResponse(
+        product_id=p.product_id,
+        name=p.name.capitalize(),
+        description=p.description,
+        date_added=p.date_added,
+        price=p.price,
+        order_fields=[
+            Configuration(name=c.name, type=c.type) for c in p.configurations
+        ],
+    )

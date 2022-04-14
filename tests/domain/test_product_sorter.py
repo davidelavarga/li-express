@@ -17,7 +17,7 @@ def products() -> List[Product]:
             price=20.0,
             date_added=date(2022, 4, 12),
             orders=2,
-            configuration=[
+            configurations=[
                 Configuration(name="date", type="date"),
                 Configuration(name="time", type="time"),
                 Configuration(name="additional notes", type="string"),
@@ -31,7 +31,7 @@ def products() -> List[Product]:
             price=12.0,
             date_added=date(2022, 4, 5),
             orders=5,
-            configuration=[
+            configurations=[
                 Configuration(name="consumption date", type="date"),
                 Configuration(name="brunch type", type="string"),
             ],
@@ -44,7 +44,7 @@ def products() -> List[Product]:
             price=5.0,
             date_added=date(2022, 4, 10),
             orders=1,
-            configuration=[
+            configurations=[
                 Configuration(name="date", type="date"),
                 Configuration(name="time", type="time"),
                 Configuration(name="adults", type="int"),
