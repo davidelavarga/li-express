@@ -15,8 +15,8 @@ class DataProvider(ABC):
         pass
 
     @abstractmethod
-    def get_product(self, reservation_id: int, product_id: int) -> Product:
+    def get_product(self, product_id: int) -> Product:
         """
-        Get the product for the given reservation_id and product id
+        Get the product for the given product id
         """
         pass

@@ -83,7 +83,7 @@ async def get_products(
     relevance: str = Query(..., description="Ways to order the products"),
     active_products: Optional[bool] = Query(
         True,
-        description=" If active=true return only active product, return all products otherwise",
+        description="If active=true return only active product, return all products otherwise",
     ),
     api_key: APIKey = Depends(verify_api_key),
 ):
@@ -101,17 +101,16 @@ async def get_products(
 
 
 @app.get(
-    "/reservations/{reservation_id}/products/{product_id}",
+    "/products/{product_id}",
     response_model=DetailProductResponse,
     status_code=status.HTTP_200_OK,
-    summary="Get product detail for the given reservation_id, including place holders",
+    summary="Get product detail for the given product_id, including place holders",
 )
 async def get_product_detal(
-    reservation_id: int,
     product_id: int,
     api_key: APIKey = Depends(verify_api_key),
 ):
-    p = ProductDetail()(reservation_id, product_id)
+    p = ProductDetail()(product_id)
 
     return DetailProductResponse(
         product_id=p.product_id,

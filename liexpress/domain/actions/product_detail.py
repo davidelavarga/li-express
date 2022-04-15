@@ -10,14 +10,10 @@ class ProductDetail:
     def __init__(self, data_provider: DataProvider):
         self.data_provider = data_provider
 
-    def __call__(self, reservation_id: int, product_id: int):
-        logging.info(
-            f"Getting product {product_id} for reservation {reservation_id} .."
-        )
+    def __call__(self, product_id: int):
+        logging.info(f"Getting product {product_id} ..")
 
-        product = self.data_provider.get_product(reservation_id, product_id)
+        product = self.data_provider.get_product(product_id)
 
-        logging.info(
-            f" Product {product.name} for reservation {reservation_id} has been found"
-        )
+        logging.info(f" Product {product.name} has been found")
         return product

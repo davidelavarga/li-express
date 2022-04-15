@@ -28,17 +28,14 @@ class Product:
 
 
 @dataclass
-class ReservationProducts:
-    reservation_id: int
+class Products:
     products: List[Product]
 
     def filter_active(self) -> List[Product]:
         active_products = list(filter(lambda x: x.active is True, self.products))
 
         if not active_products:
-            raise ActiveProductNotFound(
-                f" No active prod found for reservation {self.reservation_id}"
-            )
+            raise ActiveProductNotFound("No active prod found for reservation")
 
         return active_products
 
@@ -47,9 +44,7 @@ class ReservationProducts:
             (p for p in self.filter_active() if p.product_id == product_id), None
         )
         if not product:
-            raise ProductNotFound(
-                f"Product {product_id} not found in reservation {self.reservation_id}"
-            )
+            raise ProductNotFound(f"Product {product_id} not found")
         return product
 
 
