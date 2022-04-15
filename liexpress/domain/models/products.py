@@ -2,7 +2,11 @@ from dataclasses import dataclass
 from datetime import date
 from typing import List
 
-from liexpress.domain.models.exceptions import OrderCriteriaNotSupported
+from liexpress.domain.models.exceptions import (
+    ActiveProductNotFound,
+    OrderCriteriaNotSupported,
+    ProductNotFound,
+)
 
 
 @dataclass
@@ -19,8 +23,34 @@ class Product:
     price: float
     date_added: date
     orders: int
-    configuration: List[Configuration]
+    configurations: List[Configuration]
     active: bool = True
+
+
+@dataclass
+class ReservationProducts:
+    reservation_id: int
+    products: List[Product]
+
+    def filter_active(self) -> List[Product]:
+        active_products = list(filter(lambda x: x.active is True, self.products))
+
+        if not active_products:
+            raise ActiveProductNotFound(
+                f" No active prod found for reservation {self.reservation_id}"
+            )
+
+        return active_products
+
+    def find(self, product_id: int) -> Product:
+        product = next(
+            (p for p in self.filter_active() if p.product_id == product_id), None
+        )
+        if not product:
+            raise ProductNotFound(
+                f"Product {product_id} not found in reservation {self.reservation_id}"
+            )
+        return product
 
 
 class ProductSorter:

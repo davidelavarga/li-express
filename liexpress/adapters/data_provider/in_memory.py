@@ -1,8 +1,8 @@
 from datetime import date
-from typing import List
+from typing import Dict, List
 
 from liexpress.domain.models.exceptions import ReservationIdNotFound
-from liexpress.domain.models.products import Configuration, Product
+from liexpress.domain.models.products import Configuration, Product, ReservationProducts
 from liexpress.domain.ports import DataProvider
 
 
@@ -17,16 +17,32 @@ class InMemoryDataProvider(DataProvider):
         return all products otherwise.
         """
         try:
-            reservation_products = self._products[reservation_id]
+            reservation_products = self._get_products_by_reservation_id(reservation_id)
         except KeyError:
             raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
 
         if active:
-            return list(filter(lambda x: x.active == active, reservation_products))
+            return reservation_products.filter_active()
 
-        return reservation_products
+        return reservation_products.products
 
-    def _in_memory_products(self) -> List[Product]:
+    def get_product(self, reservation_id: int, product_id: int) -> Product:
+        """
+        Get the product for the given reservation_id and product id
+        """
+        reservation_products = self._get_products_by_reservation_id(reservation_id)
+        product = reservation_products.find(product_id)
+        return product
+
+    def _get_products_by_reservation_id(self, reservation_id: int) -> List[Product]:
+        try:
+            return ReservationProducts(
+                reservation_id=reservation_id, products=self._products[reservation_id]
+            )
+        except KeyError:
+            raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
+
+    def _in_memory_products(self) -> Dict[int, List[Product]]:
         surf = Product(
             product_id=0,
             name="surf",
@@ -34,7 +50,7 @@ class InMemoryDataProvider(DataProvider):
             price=20.0,
             date_added=date(2022, 4, 1),
             orders=2,
-            configuration=[
+            configurations=[
                 Configuration(name="date", type="date"),
                 Configuration(name="time", type="time"),
                 Configuration(name="additional notes", type="string"),
@@ -48,7 +64,7 @@ class InMemoryDataProvider(DataProvider):
             price=12.0,
             date_added=date(2022, 4, 5),
             orders=5,
-            configuration=[
+            configurations=[
                 Configuration(name="consumption date", type="date"),
                 Configuration(name="brunch type", type="string"),
             ],
@@ -61,7 +77,7 @@ class InMemoryDataProvider(DataProvider):
             price=5.0,
             date_added=date(2022, 4, 10),
             orders=5,
-            configuration=[
+            configurations=[
                 Configuration(name="date", type="date"),
                 Configuration(name="time", type="time"),
                 Configuration(name="adults", type="int"),

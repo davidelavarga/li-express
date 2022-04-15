@@ -6,7 +6,7 @@ from liexpress.domain.models.products import ProductSorter
 from liexpress.domain.ports import DataProvider
 
 
-class ProductsProvider:
+class ProductList:
     @inject.autoparams()
     def __init__(self, data_provider: DataProvider):
         self.data_provider = data_provider

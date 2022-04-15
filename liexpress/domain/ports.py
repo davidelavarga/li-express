@@ -13,3 +13,10 @@ class DataProvider(ABC):
         return all products otherwise.
         """
         pass
+
+    @abstractmethod
+    def get_product(self, reservation_id: int, product_id: int) -> Product:
+        """
+        Get the product for the given reservation_id and product id
+        """
+        pass
