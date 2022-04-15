@@ -24,3 +24,14 @@ class DetailProductResponse(BaseModel):
     date_added: date
     price: float
     order_fields: List[Configuration]
+
+
+class NewProductRequest(BaseModel):
+    name: str
+    description: str
+    price: float
+    order_fields: List[Configuration]
+
+
+class NewProductResponse(BaseModel):
+    product_id: int

@@ -9,12 +9,17 @@ from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
 
 from liexpress.bootstrap import configure_inject
+from liexpress.domain.actions.create_product import ProductCreator
 from liexpress.domain.actions.product_detail import ProductDetail
 from liexpress.domain.actions.products_list import ProductList
 from liexpress.domain.models.exceptions import ActiveProductNotFound, InputException
+from liexpress.domain.models.products import Configuration as DomConfig
+from liexpress.domain.models.products import Product
 from liexpress.entrypoints.fastapi.models import (
     Configuration,
     DetailProductResponse,
+    NewProductRequest,
+    NewProductResponse,
     PlainProductResponse,
 )
 
@@ -121,4 +126,27 @@ async def get_product_detal(
         order_fields=[
             Configuration(name=c.name, type=c.type) for c in p.configurations
         ],
+    )
+
+
+@app.post(
+    "/products",
+    response_model=NewProductResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create new product and return the product id",
+)
+async def create_product(
+    request: NewProductRequest, api_key: APIKey = Depends(verify_api_key)
+):
+    ProductCreator()(
+        Product(
+            product_id=None,
+            name=request.name,
+            description=request.description,
+            price=request.price,
+            date_added=None,
+            orders=None,
+            configurations=[DomConfig(c.name, c.type) for c in request.order_fields],
+            active=None,
+        )
     )
