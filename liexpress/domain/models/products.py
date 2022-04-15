@@ -47,6 +47,9 @@ class Products:
             raise ProductNotFound(f"Product {product_id} not found")
         return product
 
+    def get_highest_product_id(self):
+        return max([p.product_id for p in self.products] or [0])
+
 
 class ProductSorter:
     def __init__(
