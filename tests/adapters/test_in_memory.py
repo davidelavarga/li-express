@@ -1,15 +1,16 @@
 from liexpress.adapters.data_provider.in_memory import InMemoryDataProvider
 
 
-def test_get_active_products():
+def test_get_products():
     im = InMemoryDataProvider()
-    active_products = im.get_products(0)
+    products = im.get_products()
 
-    assert len(active_products) == 2
+    assert len(products.products) == 3
 
 
-def test_get_all_products():
+def test_get_products_by_reservation_id():
     im = InMemoryDataProvider()
-    active_products = im.get_products(0, active=False)
+    products = im.get_products_by_reservation_id(1)
 
-    assert len(active_products) == 3
+    assert len(products.products) == 2
+    assert [p.product_id for p in products.products] == [1, 2]

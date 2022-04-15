@@ -1,14 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import List
 
-from liexpress.domain.models.products import Product
+from liexpress.domain.models.products import Product, Products
 
 
 class DataProvider(ABC):
     @abstractmethod
-    def get_products(self, reservation_id: int, active: bool = True) -> List[Product]:
+    def get_products(self) -> Products:
         """
-        Get products for the given reservation_id.
+        Get all stored products for the given reservation_id.
         If active=True return only active product,
         return all products otherwise.
         """
@@ -18,5 +17,12 @@ class DataProvider(ABC):
     def get_product(self, product_id: int) -> Product:
         """
         Get the product for the given product id
+        """
+        pass
+
+    @abstractmethod
+    def get_products_by_reservation_id(self, reservation_id: int) -> Products:
+        """
+        Get products for the given reservation_id.
         """
         pass

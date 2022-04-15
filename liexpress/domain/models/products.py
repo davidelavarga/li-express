@@ -35,7 +35,7 @@ class Products:
         active_products = list(filter(lambda x: x.active is True, self.products))
 
         if not active_products:
-            raise ActiveProductNotFound("No active prod found for reservation")
+            raise ActiveProductNotFound("No active products found")
 
         return active_products
 

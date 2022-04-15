@@ -13,7 +13,10 @@ class ProductList:
 
     def __call__(self, reservation_id: int, order_by: str, active: bool):
         logging.info(f"Getting product for reservation {reservation_id} ..")
-        products = self.data_provider.get_products(reservation_id, active=active)
+        products = self.data_provider.get_products_by_reservation_id(reservation_id)
+
+        if active:
+            products = products.filter_active()
 
         logging.info(f"Ordering products by {order_by} ..")
-        return ProductSorter(products)(order_by)
+        return ProductSorter(products.products)(order_by)

@@ -11,21 +11,13 @@ class InMemoryDataProvider(DataProvider):
         self._products = self._in_memory_products()
         self._reservations = self._in_memory_reservations()
 
-    def get_products(self, reservation_id: int, active: bool = True) -> List[Product]:
+    def get_products(self) -> Products:
         """
-        Get products for the given reservation_id.
+        Get all stored products for the given reservation_id.
         If active=True return only active product,
         return all products otherwise.
         """
-        try:
-            reservation_products = self._get_products_by_reservation_id(reservation_id)
-        except KeyError:
-            raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
-
-        if active:
-            return reservation_products.filter_active()
-
-        return reservation_products.products
+        return Products(self._products)
 
     def get_product(self, product_id: int) -> Product:
         """
@@ -33,7 +25,10 @@ class InMemoryDataProvider(DataProvider):
         """
         return Products(products=self._products).find(product_id)
 
-    def _get_products_by_reservation_id(self, reservation_id: int) -> List[Product]:
+    def get_products_by_reservation_id(self, reservation_id: int) -> Products:
+        """
+        Get products for the given reservation_id.
+        """
         try:
             return Products(
                 products=self._reservations[reservation_id],
@@ -86,6 +81,6 @@ class InMemoryDataProvider(DataProvider):
         )
         return [surf, brunch, museum]
 
-    def _in_memory_reservations(self) -> Dict[int, List[Product]]:
+    def _in_memory_reservations(self) -> Dict[int, Products]:
         surf, brunch, museum = self._products
         return {0: [surf, brunch, museum], 1: [brunch, museum]}
