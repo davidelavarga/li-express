@@ -26,3 +26,10 @@ class DataProvider(ABC):
         Get products for the given reservation_id.
         """
         pass
+
+    @abstractmethod
+    def add_product(self, new: Product) -> int:
+        """
+        Add new product
+        """
+        pass

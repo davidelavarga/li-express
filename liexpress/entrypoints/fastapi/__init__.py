@@ -138,15 +138,11 @@ async def get_product_detal(
 async def create_product(
     request: NewProductRequest, api_key: APIKey = Depends(verify_api_key)
 ):
-    ProductCreator()(
-        Product(
-            product_id=None,
-            name=request.name,
-            description=request.description,
-            price=request.price,
-            date_added=None,
-            orders=None,
-            configurations=[DomConfig(c.name, c.type) for c in request.order_fields],
-            active=None,
-        )
+    product_id = ProductCreator()(
+        name=request.name,
+        description=request.description,
+        price=request.price,
+        configurations=[DomConfig(c.name, c.type) for c in request.order_fields],
     )
+
+    return NewProductResponse(product_id=product_id)

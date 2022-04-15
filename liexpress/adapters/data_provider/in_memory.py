@@ -36,6 +36,13 @@ class InMemoryDataProvider(DataProvider):
         except KeyError:
             raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
 
+    def add_product(self, new: Product) -> int:
+        """
+        Add new product
+        """
+        self._products.append(new)
+        return new.product_id
+
     def _in_memory_products(self) -> List[Product]:
         surf = Product(
             product_id=0,
