@@ -17,4 +17,7 @@ class ProductDetail:
 
         product = self.data_provider.get_product(reservation_id, product_id)
 
+        logging.info(
+            f" Product {product.name} for reservation {reservation_id} has been found"
+        )
         return product

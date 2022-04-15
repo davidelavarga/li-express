@@ -8,3 +8,7 @@ class OrderCriteriaNotSupported(InputException):
 
 class ReservationIdNotFound(InputException):
     pass
+
+
+class ProductNotFound(InputException):
+    pass

@@ -1,7 +1,7 @@
 from datetime import date
-from typing import List
+from typing import Dict, List
 
-from liexpress.domain.models.exceptions import ReservationIdNotFound
+from liexpress.domain.models.exceptions import ProductNotFound, ReservationIdNotFound
 from liexpress.domain.models.products import Configuration, Product
 from liexpress.domain.ports import DataProvider
 
@@ -17,7 +17,7 @@ class InMemoryDataProvider(DataProvider):
         return all products otherwise.
         """
         try:
-            reservation_products = self._products[reservation_id]
+            reservation_products = self._get_products_by_reservation_id(reservation_id)
         except KeyError:
             raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
 
@@ -26,7 +26,27 @@ class InMemoryDataProvider(DataProvider):
 
         return reservation_products
 
-    def _in_memory_products(self) -> List[Product]:
+    def get_product(self, reservation_id: int, product_id: int) -> Product:
+        """
+        Get the product for the given reservation_id and product id
+        """
+        reservation_products = self._get_products_by_reservation_id(reservation_id)
+        product = next(
+            (p for p in reservation_products if p.product_id == product_id), None
+        )
+        if not product:
+            raise ProductNotFound(
+                f"Product {product_id} not found in reservation {reservation_id}"
+            )
+        return product
+
+    def _get_products_by_reservation_id(self, reservation_id: int) -> List[Product]:
+        try:
+            return self._products[reservation_id]
+        except KeyError:
+            raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
+
+    def _in_memory_products(self) -> Dict[int, List[Product]]:
         surf = Product(
             product_id=0,
             name="surf",
