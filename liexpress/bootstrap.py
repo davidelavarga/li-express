@@ -3,13 +3,13 @@ import sys
 
 import inject
 
-from liexpress.domain.ports import DataProvider
+from liexpress.domain.ports import Repository
 
 
 def dev_config(binder):
-    from liexpress.adapters.data_provider.in_memory import InMemoryDataProvider
+    from liexpress.adapters.data_provider.in_memory import InMemoryRepository
 
-    binder.bind(DataProvider, InMemoryDataProvider())
+    binder.bind(Repository, InMemoryRepository())
 
 
 def configure_inject():

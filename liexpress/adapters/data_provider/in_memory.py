@@ -3,25 +3,23 @@ from typing import Dict, List
 
 from liexpress.domain.models.exceptions import ReservationIdNotFound
 from liexpress.domain.models.products import Configuration, Product, Products
-from liexpress.domain.ports import DataProvider
+from liexpress.domain.ports import Repository
 
 
-class InMemoryDataProvider(DataProvider):
+class InMemoryRepository(Repository):
     def __init__(self):
         self._products = self._in_memory_products()
         self._reservations = self._in_memory_reservations()
 
     def get_products(self) -> Products:
         """
-        Get all stored products for the given reservation_id.
-        If active=True return only active product,
-        return all products otherwise.
+        Get stored products.
         """
         return Products(self._products)
 
     def get_product(self, product_id: int) -> Product:
         """
-        Get the product for the given product id
+        Get the product for the given product id.
         """
         return Products(products=self._products).find(product_id)
 

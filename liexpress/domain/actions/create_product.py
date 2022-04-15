@@ -5,12 +5,12 @@ from typing import List
 import inject
 
 from liexpress.domain.models.products import Configuration, Product
-from liexpress.domain.ports import DataProvider
+from liexpress.domain.ports import Repository
 
 
 class ProductCreator:
     @inject.autoparams()
-    def __init__(self, data_provider: DataProvider):
+    def __init__(self, data_provider: Repository):
         self.data_provider = data_provider
 
     def __call__(

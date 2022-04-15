@@ -1,18 +1,18 @@
 from datetime import date
 
-from liexpress.adapters.data_provider.in_memory import InMemoryDataProvider
+from liexpress.adapters.data_provider.in_memory import InMemoryRepository
 from liexpress.domain.models.products import Configuration, Product
 
 
 def test_get_products():
-    im = InMemoryDataProvider()
+    im = InMemoryRepository()
     products = im.get_products()
 
     assert len(products.products) == 3
 
 
 def test_get_products_by_reservation_id():
-    im = InMemoryDataProvider()
+    im = InMemoryRepository()
     products = im.get_products_by_reservation_id(1)
 
     assert len(products.products) == 2
@@ -20,7 +20,7 @@ def test_get_products_by_reservation_id():
 
 
 def test_add_new_product():
-    im = InMemoryDataProvider()
+    im = InMemoryRepository()
     product_id = im.add_product(
         Product(
             product_id=3,

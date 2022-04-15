@@ -3,12 +3,12 @@ import logging
 import inject
 
 from liexpress.domain.models.products import ProductSorter
-from liexpress.domain.ports import DataProvider
+from liexpress.domain.ports import Repository
 
 
 class ProductList:
     @inject.autoparams()
-    def __init__(self, data_provider: DataProvider):
+    def __init__(self, data_provider: Repository):
         self.data_provider = data_provider
 
     def __call__(self, reservation_id: int, order_by: str, active: bool):
