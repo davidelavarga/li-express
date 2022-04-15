@@ -24,7 +24,7 @@ class ProductCreator:
 
         products = self.data_provider.get_products()
 
-        product_id = products.get_highest_product_id()
+        product_id = products.get_highest_product_id() + 1
 
         new = Product(
             product_id=product_id,

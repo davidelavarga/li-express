@@ -37,11 +37,12 @@ class Products:
         if not active_products:
             raise ActiveProductNotFound("No active products found")
 
-        return active_products
+        return Products(active_products)
 
     def find(self, product_id: int) -> Product:
         product = next(
-            (p for p in self.filter_active() if p.product_id == product_id), None
+            (p for p in self.filter_active().products if p.product_id == product_id),
+            None,
         )
         if not product:
             raise ProductNotFound(f"Product {product_id} not found")
