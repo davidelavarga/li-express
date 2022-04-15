@@ -3,8 +3,17 @@ from typing import List
 
 import pytest
 
-from liexpress.domain.models.exceptions import OrderCriteriaNotSupported
-from liexpress.domain.models.products import Configuration, Product, ProductSorter
+from liexpress.domain.models.exceptions import (
+    ActiveProductNotFound,
+    OrderCriteriaNotSupported,
+)
+from liexpress.domain.models.products import (
+    Configuration,
+    Product,
+    ProductNotFound,
+    ProductSorter,
+    ReservationProducts,
+)
 
 
 @pytest.fixture
@@ -70,3 +79,40 @@ def test_sort_products_by_n_order(products: List[Product]):
 def test_sort_products_criteria_not_supported(products: List[Product]):
     with pytest.raises(OrderCriteriaNotSupported):
         ProductSorter(products)("fail")
+
+
+def test_reservation_products_filter_active(products: List[Product]):
+    rp = ReservationProducts(0, products)
+    active_products = rp.filter_active()
+
+    products_ids = [p.product_id for p in active_products]
+
+    assert len(active_products) == 2
+    assert products_ids == [0, 1]
+
+
+def test_reservation_products_no_active(products: List[Product]):
+    rp = ReservationProducts(0, products[2:])
+    with pytest.raises(ActiveProductNotFound):
+        rp.filter_active()
+
+
+def test_reservation_products_find(products: List[Product]):
+    rp = ReservationProducts(0, products)
+    p = rp.find(0)
+
+    assert p.active is True
+    assert p.product_id == 0
+    assert p.name == "surf"
+
+
+def test_reservation_products_product_not_foudnd(products: List[Product]):
+    rp = ReservationProducts(0, products)
+    with pytest.raises(ProductNotFound):
+        rp.find(5)
+
+
+def test_reservation_products_find_with_no_active(products: List[Product]):
+    rp = ReservationProducts(0, products[2:])
+    with pytest.raises(ActiveProductNotFound):
+        rp.find(0)

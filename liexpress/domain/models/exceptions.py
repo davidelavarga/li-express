@@ -12,3 +12,7 @@ class ReservationIdNotFound(InputException):
 
 class ProductNotFound(InputException):
     pass
+
+
+class ActiveProductNotFound(Exception):
+    pass

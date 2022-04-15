@@ -11,7 +11,7 @@ from fastapi.security import APIKeyHeader
 from liexpress.bootstrap import configure_inject
 from liexpress.domain.actions.product_detail import ProductDetail
 from liexpress.domain.actions.products_list import ProductList
-from liexpress.domain.models.exceptions import InputException
+from liexpress.domain.models.exceptions import ActiveProductNotFound, InputException
 from liexpress.entrypoints.fastapi.models import (
     Configuration,
     DetailProductResponse,
@@ -56,6 +56,17 @@ async def input_exception_handler(request: Request, exc: Exception):
         status_code=HTTPStatus.BAD_REQUEST.value,
         content={
             "status": f"{HTTPStatus.BAD_REQUEST.name}",
+            "ErrorMessage": f"{exc}",
+        },
+    )
+
+
+@app.exception_handler(ActiveProductNotFound)
+async def not_found_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=HTTPStatus.NOT_FOUND.value,
+        content={
+            "status": f"{HTTPStatus.NOT_FOUND.name}",
             "ErrorMessage": f"{exc}",
         },
     )
