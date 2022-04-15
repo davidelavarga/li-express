@@ -2,13 +2,14 @@ from datetime import date
 from typing import Dict, List
 
 from liexpress.domain.models.exceptions import ReservationIdNotFound
-from liexpress.domain.models.products import Configuration, Product, ReservationProducts
+from liexpress.domain.models.products import Configuration, Product, Products
 from liexpress.domain.ports import DataProvider
 
 
 class InMemoryDataProvider(DataProvider):
     def __init__(self):
         self._products = self._in_memory_products()
+        self._reservations = self._in_memory_reservations()
 
     def get_products(self, reservation_id: int, active: bool = True) -> List[Product]:
         """
@@ -26,23 +27,21 @@ class InMemoryDataProvider(DataProvider):
 
         return reservation_products.products
 
-    def get_product(self, reservation_id: int, product_id: int) -> Product:
+    def get_product(self, product_id: int) -> Product:
         """
-        Get the product for the given reservation_id and product id
+        Get the product for the given product id
         """
-        reservation_products = self._get_products_by_reservation_id(reservation_id)
-        product = reservation_products.find(product_id)
-        return product
+        return Products(products=self._products).find(product_id)
 
     def _get_products_by_reservation_id(self, reservation_id: int) -> List[Product]:
         try:
-            return ReservationProducts(
-                reservation_id=reservation_id, products=self._products[reservation_id]
+            return Products(
+                products=self._reservations[reservation_id],
             )
         except KeyError:
             raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
 
-    def _in_memory_products(self) -> Dict[int, List[Product]]:
+    def _in_memory_products(self) -> List[Product]:
         surf = Product(
             product_id=0,
             name="surf",
@@ -85,4 +84,8 @@ class InMemoryDataProvider(DataProvider):
             ],
             active=False,
         )
+        return [surf, brunch, museum]
+
+    def _in_memory_reservations(self) -> Dict[int, List[Product]]:
+        surf, brunch, museum = self._products
         return {0: [surf, brunch, museum], 1: [brunch, museum]}

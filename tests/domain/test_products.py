@@ -11,8 +11,8 @@ from liexpress.domain.models.products import (
     Configuration,
     Product,
     ProductNotFound,
+    Products,
     ProductSorter,
-    ReservationProducts,
 )
 
 
@@ -82,7 +82,7 @@ def test_sort_products_criteria_not_supported(products: List[Product]):
 
 
 def test_reservation_products_filter_active(products: List[Product]):
-    rp = ReservationProducts(0, products)
+    rp = Products(products)
     active_products = rp.filter_active()
 
     products_ids = [p.product_id for p in active_products]
@@ -92,13 +92,13 @@ def test_reservation_products_filter_active(products: List[Product]):
 
 
 def test_reservation_products_no_active(products: List[Product]):
-    rp = ReservationProducts(0, products[2:])
+    rp = Products(products[2:])
     with pytest.raises(ActiveProductNotFound):
         rp.filter_active()
 
 
 def test_reservation_products_find(products: List[Product]):
-    rp = ReservationProducts(0, products)
+    rp = Products(products)
     p = rp.find(0)
 
     assert p.active is True
@@ -107,12 +107,12 @@ def test_reservation_products_find(products: List[Product]):
 
 
 def test_reservation_products_product_not_foudnd(products: List[Product]):
-    rp = ReservationProducts(0, products)
+    rp = Products(products)
     with pytest.raises(ProductNotFound):
         rp.find(5)
 
 
 def test_reservation_products_find_with_no_active(products: List[Product]):
-    rp = ReservationProducts(0, products[2:])
+    rp = Products(products[2:])
     with pytest.raises(ActiveProductNotFound):
         rp.find(0)
