@@ -3,43 +3,43 @@ from typing import Dict, List
 
 from liexpress.domain.models.exceptions import ReservationIdNotFound
 from liexpress.domain.models.products import Configuration, Product, Products
-from liexpress.domain.ports import DataProvider
+from liexpress.domain.ports import Repository
 
 
-class InMemoryDataProvider(DataProvider):
+class InMemoryRepository(Repository):
     def __init__(self):
         self._products = self._in_memory_products()
         self._reservations = self._in_memory_reservations()
 
-    def get_products(self, reservation_id: int, active: bool = True) -> List[Product]:
+    def get_products(self) -> Products:
         """
-        Get products for the given reservation_id.
-        If active=True return only active product,
-        return all products otherwise.
+        Get stored products.
         """
-        try:
-            reservation_products = self._get_products_by_reservation_id(reservation_id)
-        except KeyError:
-            raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
-
-        if active:
-            return reservation_products.filter_active()
-
-        return reservation_products.products
+        return Products(self._products)
 
     def get_product(self, product_id: int) -> Product:
         """
-        Get the product for the given product id
+        Get the product for the given product id.
         """
         return Products(products=self._products).find(product_id)
 
-    def _get_products_by_reservation_id(self, reservation_id: int) -> List[Product]:
+    def get_products_by_reservation_id(self, reservation_id: int) -> Products:
+        """
+        Get products for the given reservation_id.
+        """
         try:
             return Products(
                 products=self._reservations[reservation_id],
             )
         except KeyError:
             raise ReservationIdNotFound(f"Reservation {reservation_id} not found")
+
+    def add_product(self, new: Product) -> int:
+        """
+        Add new product
+        """
+        self._products.append(new)
+        return new.product_id
 
     def _in_memory_products(self) -> List[Product]:
         surf = Product(
@@ -86,6 +86,6 @@ class InMemoryDataProvider(DataProvider):
         )
         return [surf, brunch, museum]
 
-    def _in_memory_reservations(self) -> Dict[int, List[Product]]:
+    def _in_memory_reservations(self) -> Dict[int, Products]:
         surf, brunch, museum = self._products
         return {0: [surf, brunch, museum], 1: [brunch, museum]}

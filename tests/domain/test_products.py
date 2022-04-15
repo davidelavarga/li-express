@@ -81,7 +81,7 @@ def test_sort_products_criteria_not_supported(products: List[Product]):
         ProductSorter(products)("fail")
 
 
-def test_reservation_products_filter_active(products: List[Product]):
+def test_products_filter_active(products: List[Product]):
     rp = Products(products)
     active_products = rp.filter_active()
 
@@ -91,13 +91,13 @@ def test_reservation_products_filter_active(products: List[Product]):
     assert products_ids == [0, 1]
 
 
-def test_reservation_products_no_active(products: List[Product]):
+def test_products_no_active(products: List[Product]):
     rp = Products(products[2:])
     with pytest.raises(ActiveProductNotFound):
         rp.filter_active()
 
 
-def test_reservation_products_find(products: List[Product]):
+def test_products_find(products: List[Product]):
     rp = Products(products)
     p = rp.find(0)
 
@@ -106,13 +106,27 @@ def test_reservation_products_find(products: List[Product]):
     assert p.name == "surf"
 
 
-def test_reservation_products_product_not_foudnd(products: List[Product]):
+def test_products_product_not_foudnd(products: List[Product]):
     rp = Products(products)
     with pytest.raises(ProductNotFound):
         rp.find(5)
 
 
-def test_reservation_products_find_with_no_active(products: List[Product]):
+def test_products_find_with_no_active(products: List[Product]):
     rp = Products(products[2:])
     with pytest.raises(ActiveProductNotFound):
         rp.find(0)
+
+
+def test_products_get_highest_product_id(products: List[Product]):
+    rp = Products(products)
+    highest_id = rp.get_highest_product_id()
+
+    assert highest_id == 2
+
+
+def test_products_get_highest_product_id_empty_products():
+    rp = Products([])
+    highest_id = rp.get_highest_product_id()
+
+    assert highest_id == 0

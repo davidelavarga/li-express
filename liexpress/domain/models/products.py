@@ -35,17 +35,21 @@ class Products:
         active_products = list(filter(lambda x: x.active is True, self.products))
 
         if not active_products:
-            raise ActiveProductNotFound("No active prod found for reservation")
+            raise ActiveProductNotFound("No active products found")
 
-        return active_products
+        return Products(active_products)
 
     def find(self, product_id: int) -> Product:
         product = next(
-            (p for p in self.filter_active() if p.product_id == product_id), None
+            (p for p in self.filter_active().products if p.product_id == product_id),
+            None,
         )
         if not product:
             raise ProductNotFound(f"Product {product_id} not found")
         return product
+
+    def get_highest_product_id(self):
+        return max([p.product_id for p in self.products] or [0])
 
 
 class ProductSorter:

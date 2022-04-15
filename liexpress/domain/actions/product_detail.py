@@ -2,12 +2,12 @@ import logging
 
 import inject
 
-from liexpress.domain.ports import DataProvider
+from liexpress.domain.ports import Repository
 
 
 class ProductDetail:
     @inject.autoparams()
-    def __init__(self, data_provider: DataProvider):
+    def __init__(self, data_provider: Repository):
         self.data_provider = data_provider
 
     def __call__(self, product_id: int):
