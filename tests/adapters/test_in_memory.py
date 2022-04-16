@@ -26,7 +26,7 @@ def test_get_products(all_products_criteria: Criteria):
     im = InMemoryRepository()
     products = im.get_products(all_products_criteria)
 
-    assert len(products) == 3
+    assert len(products) == 4
 
 
 def test_get_products_by_id():
