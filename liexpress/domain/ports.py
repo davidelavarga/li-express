@@ -1,27 +1,15 @@
 from abc import ABC, abstractmethod
+from typing import List
 
-from liexpress.domain.models.products import Product, Products
+from liexpress.domain.models.criteria import Criteria
+from liexpress.domain.models.products import Product
 
 
 class Repository(ABC):
     @abstractmethod
-    def get_products(self) -> Products:
+    def get_products(self, criteria: Criteria) -> List[Product]:
         """
         Get stored products.
-        """
-        pass
-
-    @abstractmethod
-    def get_product(self, product_id: int) -> Product:
-        """
-        Get the product for the given product id.
-        """
-        pass
-
-    @abstractmethod
-    def get_products_by_reservation_id(self, reservation_id: int) -> Products:
-        """
-        Get products for the given reservation_id.
         """
         pass
 

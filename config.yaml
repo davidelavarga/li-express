@@ -1,0 +1,3 @@
+order_filters_supported:
+  - date_added
+  - orders

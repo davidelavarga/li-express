@@ -85,14 +85,14 @@ async def not_found_exception_handler(request: Request, exc: Exception):
 )
 async def get_products(
     reservation_id: int,
-    relevance: str = Query(..., description="Ways to order the products"),
+    order_by: str = Query(..., description="Ways to order the products"),
     active_products: Optional[bool] = Query(
         True,
         description="If active=true return only active product, return all products otherwise",
     ),
     api_key: APIKey = Depends(verify_api_key),
 ):
-    products = ProductList()(reservation_id, relevance, active_products)
+    products = ProductList()(reservation_id, order_by, active_products)
     return [
         PlainProductResponse(
             product_id=p.product_id,
