@@ -2,8 +2,8 @@ from datetime import date
 
 import pytest
 
-from liexpress.adapters.data_provider.in_memory import InMemoryRepository
-from liexpress.adapters.data_provider.in_memory_criteria import (
+from liexpress.adapters.repository.in_memory import InMemoryRepository
+from liexpress.adapters.repository.in_memory_criteria import (
     Criteria,
     Filter,
     FilterOperator,

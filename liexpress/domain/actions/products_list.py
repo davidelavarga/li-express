@@ -8,8 +8,8 @@ from liexpress.domain.ports import Repository
 
 class ProductList:
     @inject.autoparams()
-    def __init__(self, data_provider: Repository):
-        self.data_provider = data_provider
+    def __init__(self, repository: Repository):
+        self.repository = repository
 
     def __call__(self, reservation_id: int, order_by: str, active: bool):
         logging.info(f"Getting product for reservation {reservation_id} ..")
@@ -24,7 +24,7 @@ class ProductList:
                 Filter("active", FilterOperator.IDEQ, active),
             ],
         )
-        products = self.data_provider.get_products_by_reservation_id(
+        products = self.repository.get_products_by_reservation_id(
             reservation_id, criteria
         )
         return products

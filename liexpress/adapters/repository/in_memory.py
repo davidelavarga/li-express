@@ -1,9 +1,7 @@
 from datetime import date
 from typing import List
 
-from liexpress.adapters.data_provider.in_memory_criteria import (
-    InMemoryCriteriaConverter,
-)
+from liexpress.adapters.repository.in_memory_criteria import InMemoryCriteriaConverter
 from liexpress.domain.models.criteria import Criteria
 from liexpress.domain.models.exceptions import ProductAlreadyRequested
 from liexpress.domain.models.orders import Order
