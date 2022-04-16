@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class PlainProductResponse(BaseModel):
-    product_id: int
+    product_id: str
     name: str
     description: str
     date_added: date
@@ -18,7 +18,7 @@ class Configuration(BaseModel):
 
 
 class DetailProductResponse(BaseModel):
-    product_id: int
+    product_id: str
     name: str
     description: str
     date_added: date
