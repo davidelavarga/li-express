@@ -87,7 +87,7 @@ async def not_found_exception_handler(request: Request, exc: Exception):
     summary="Get products for the given reservation_id",
 )
 async def get_products(
-    reservation_id: int,
+    reservation_id: UUID,
     order_by: str = Query(..., description="Ways to order the products"),
     active_products: Optional[bool] = Query(
         True,
@@ -95,7 +95,7 @@ async def get_products(
     ),
     api_key: APIKey = Depends(verify_api_key),
 ):
-    products = ProductList()(reservation_id, order_by, active_products)
+    products = ProductList()(str(reservation_id), order_by, active_products)
     return [
         PlainProductResponse(
             product_id=p.product_id,
@@ -118,7 +118,7 @@ async def get_product_detal(
     product_id: UUID,
     api_key: APIKey = Depends(verify_api_key),
 ):
-    p = ProductDetail()(product_id)
+    p = ProductDetail()(str(product_id))
 
     return DetailProductResponse(
         product_id=p.product_id,
@@ -161,14 +161,14 @@ async def create_product(
     summary="Request an order for given product",
 )
 async def order_product(
-    reservation_id: int,
-    product_id: int,
+    reservation_id: UUID,
+    product_id: UUID,
     request: OrderProductRequet,
     api_key: APIKey = Depends(verify_api_key),
 ):
     order_id = OrderProduct()(
-        reservation_id=reservation_id,
-        product_id=product_id,
+        reservation_id=str(reservation_id),
+        product_id=str(product_id),
         configurations=[DomConfig(c.name, c.type) for c in request.order_fields],
     )
 

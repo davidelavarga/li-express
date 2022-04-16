@@ -24,7 +24,5 @@ class ProductList:
                 Filter("active", FilterOperator.IDEQ, active),
             ],
         )
-        products = self.repository.get_products_by_reservation_id(
-            reservation_id, criteria
-        )
+        products = self.repository.get_products(criteria)
         return products

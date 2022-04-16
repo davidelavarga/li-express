@@ -27,9 +27,11 @@ class InMemoryRepository(Repository):
         Add new product or update if it exists
         """
         to_update = self._get_product(new)
-        self._products.remove(to_update)
+        if to_update:
+            self._products.remove(to_update)
         self._products.append(new)
-        return to_update.product_id
+
+        return new.product_id
 
     def store_order(self, order: Order):
         """
@@ -45,7 +47,7 @@ class InMemoryRepository(Repository):
         for p in self._products:
             if p.product_id == new.product_id:
                 return p
-        return new
+        return None
 
     def _in_memory_products(self) -> List[Product]:
         surf = Product(
@@ -110,9 +112,11 @@ class InMemoryRepository(Repository):
 
     def _in_memory_reservations(self):
         surf, brunch, museum, _ = self._products
-        surf.reservations.append(0)
-        brunch.reservations.append(0)
-        museum.reservations.append(0)
+        reservation0 = "e0388679-f1f4-4b70-87fe-6dba6c66183b"
+        surf.reservations.append(reservation0)
+        brunch.reservations.append(reservation0)
+        museum.reservations.append(reservation0)
 
-        brunch.reservations.append(1)
-        museum.reservations.append(1)
+        reservation1 = "1092a4bd-0e7a-42cc-ab12-12d7155ee772"
+        brunch.reservations.append(reservation1)
+        museum.reservations.append(reservation1)
