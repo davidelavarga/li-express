@@ -20,3 +20,11 @@ class Product:
     configurations: List[Configuration]
     active: bool = True
     reservations: List[int] = field(default_factory=list)
+
+    def has_reservation(self, reservation_id: int) -> bool:
+        return reservation_id in self.reservations
+
+    def check_configurations(self, configurations: List[Configuration]) -> bool:
+        if len(self.configurations) == len(configurations):
+            return all([c in self.configurations for c in configurations])
+        return False
