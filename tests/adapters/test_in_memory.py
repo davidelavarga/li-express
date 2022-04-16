@@ -35,14 +35,16 @@ def test_get_products_by_id():
         limit=10,
         offset=0,
         filters=[
-            Filter("product_id", FilterOperator.EQ, 0),
+            Filter(
+                "product_id", FilterOperator.EQ, "f5e1d3c2-08c7-40b7-8045-f5748e004b9c"
+            ),
         ],
     )
 
     im = InMemoryRepository()
     product = im.get_products(criteria)[0]
 
-    assert product.product_id == 0
+    assert product.product_id == "f5e1d3c2-08c7-40b7-8045-f5748e004b9c"
     assert product.name == "surf"
 
 
@@ -74,7 +76,10 @@ def test_get_products_by_reservation_id():
     products = im.get_products(criteria)
 
     assert len(products) == 2
-    assert [p.product_id for p in products] == [1, 2]
+    assert [p.product_id for p in products] == [
+        "25dae451-7bf4-41f9-ae2d-2307fa8f38ec",
+        "bd4ea9f6-e984-46a0-b674-b61302047cb1",
+    ]
 
 
 def test_get_products_by_reservation_id_reservation_not_found():
@@ -96,7 +101,7 @@ def test_add_new_product(all_products_criteria: Criteria):
     im = InMemoryRepository()
     product_id = im.add_product(
         Product(
-            product_id=3,
+            product_id="44b260d9-78c9-47f7-a644-afec0482ae03",
             name="new product",
             description="New product description",
             price=19.9,

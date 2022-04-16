@@ -40,7 +40,9 @@ class OrderProduct:
                 f"Configurations {configurations} does not match with product configurations: {product.configurations} "
             )
 
-        order = Order(reservation_id=reservation_id, product=product)
+        order = Order(
+            order_id=str(uuid4()), reservation_id=reservation_id, product=product
+        )
 
         logging.info(f"Storing order {order.order_id} ..")
         self.repo.store_order(order)

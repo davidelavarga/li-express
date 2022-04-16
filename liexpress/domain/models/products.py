@@ -11,7 +11,7 @@ class Configuration:
 
 @dataclass
 class Product:
-    product_id: int
+    product_id: str
     name: str
     description: str
     price: float

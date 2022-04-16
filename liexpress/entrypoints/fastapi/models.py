@@ -34,7 +34,7 @@ class NewProductRequest(BaseModel):
 
 
 class NewProductResponse(BaseModel):
-    product_id: int
+    product_id: str
 
 
 class OrderProductRequet(BaseModel):

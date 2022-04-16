@@ -43,7 +43,7 @@ class InMemoryRepository(Repository):
 
     def _in_memory_products(self) -> List[Product]:
         surf = Product(
-            product_id=0,
+            product_id="f5e1d3c2-08c7-40b7-8045-f5748e004b9c",
             name="surf",
             description="Amazing surf classes.",
             price=20.0,
@@ -57,7 +57,7 @@ class InMemoryRepository(Repository):
             active=True,
         )
         brunch = Product(
-            product_id=1,
+            product_id="25dae451-7bf4-41f9-ae2d-2307fa8f38ec",
             name="brunch",
             description="Delicious homemade brunch.",
             price=12.0,
@@ -70,7 +70,7 @@ class InMemoryRepository(Repository):
             active=True,
         )
         museum = Product(
-            product_id=2,
+            product_id="bd4ea9f6-e984-46a0-b674-b61302047cb1",
             name="natural science museum",
             description="Natural Science Museum",
             price=5.0,
@@ -86,7 +86,7 @@ class InMemoryRepository(Repository):
         )
 
         spa = Product(
-            product_id=3,
+            product_id="44b260d9-78c9-47f7-a644-afec0482ae03",
             name="spa",
             description="Peaceful spa",
             price=40.0,
