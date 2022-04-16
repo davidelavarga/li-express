@@ -23,14 +23,6 @@ def product() -> Product:
     )
 
 
-def test_has_reservation_true(product: Product):
-    assert product.has_reservation(0)
-
-
-def test_has_reservation_false(product: Product):
-    assert product.has_reservation(1) is False
-
-
 def test_check_configurations_happy_path(product: Product):
     confs = [
         Configuration(name="date", type="date"),
