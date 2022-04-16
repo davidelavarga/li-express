@@ -42,4 +42,4 @@ class OrderProductRequet(BaseModel):
 
 
 class OrderProductResponse(BaseModel):
-    order_id: int
+    order_id: str

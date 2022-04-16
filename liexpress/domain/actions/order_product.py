@@ -5,10 +5,7 @@ from uuid import uuid4
 import inject
 
 from liexpress.domain.models.criteria import Criteria, Filter, FilterOperator
-from liexpress.domain.models.exceptions import (
-    BadConfigurationError,
-    ProductAlreadyHasReservation,
-)
+from liexpress.domain.models.exceptions import BadConfigurationError
 from liexpress.domain.models.orders import Order
 from liexpress.domain.models.products import Configuration
 from liexpress.domain.ports import Repository

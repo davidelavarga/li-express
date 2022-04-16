@@ -8,7 +8,7 @@ from liexpress.domain.models.products import Product
 class Order:
     reservation_id: int
     product: Product
-    order_id: str = uuid4()
+    order_id: str = str(uuid4())
 
     def __eq__(self, o: object) -> bool:
         return (
