@@ -15,7 +15,7 @@ class ProductDetail:
         logging.info(f"Getting product {product_id} ..")
 
         criteria = Criteria(
-            order="date_added",
+            order=None,
             limit=1,
             offset=0,
             filters=[

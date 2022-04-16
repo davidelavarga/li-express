@@ -5,6 +5,8 @@ from liexpress.adapters.data_provider.in_memory_criteria import (
     InMemoryCriteriaConverter,
 )
 from liexpress.domain.models.criteria import Criteria
+from liexpress.domain.models.exceptions import ProductAlreadyRequested
+from liexpress.domain.models.orders import Order
 from liexpress.domain.models.products import Configuration, Product
 from liexpress.domain.ports import Repository
 
@@ -13,6 +15,7 @@ class InMemoryRepository(Repository):
     def __init__(self):
         self._products = self._in_memory_products()
         self._in_memory_reservations()
+        self._orders = []
 
     def get_products(self, criteria: Criteria) -> List[Product]:
         """
@@ -27,6 +30,16 @@ class InMemoryRepository(Repository):
         """
         self._products.append(new)
         return new.product_id
+
+    def store_order(self, order: Order):
+        """
+        Store new order
+        """
+        if order in self._orders:
+            raise ProductAlreadyRequested(
+                f"Product {order.product.product_id} already requested for reservation {order.reservation_id}"
+            )
+        self._orders.append(order)
 
     def _in_memory_products(self) -> List[Product]:
         surf = Product(
@@ -71,10 +84,26 @@ class InMemoryRepository(Repository):
             ],
             active=False,
         )
-        return [surf, brunch, museum]
+
+        spa = Product(
+            product_id=3,
+            name="spa",
+            description="Peaceful spa",
+            price=40.0,
+            date_added=date(2022, 4, 12),
+            orders=20,
+            configurations=[
+                Configuration(name="date", type="date"),
+                Configuration(name="time", type="time"),
+                Configuration(name="adults", type="int"),
+                Configuration(name="massage", type="boolean"),
+            ],
+            active=True,
+        )
+        return [surf, brunch, museum, spa]
 
     def _in_memory_reservations(self):
-        surf, brunch, museum = self._products
+        surf, brunch, museum, _ = self._products
         surf.reservations.append(0)
         brunch.reservations.append(0)
         museum.reservations.append(0)

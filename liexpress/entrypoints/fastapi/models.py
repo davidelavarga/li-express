@@ -35,3 +35,11 @@ class NewProductRequest(BaseModel):
 
 class NewProductResponse(BaseModel):
     product_id: int
+
+
+class OrderProductRequet(BaseModel):
+    order_fields: List[Configuration]
+
+
+class OrderProductResponse(BaseModel):
+    order_id: str

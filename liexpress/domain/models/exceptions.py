@@ -14,5 +14,13 @@ class ProductNotFound(InputException):
     pass
 
 
+class BadConfigurationError(InputException):
+    pass
+
+
+class ProductAlreadyRequested(InputException):
+    pass
+
+
 class ActiveProductNotFound(Exception):
     pass

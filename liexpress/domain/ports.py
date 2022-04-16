@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from liexpress.domain.models.criteria import Criteria
+from liexpress.domain.models.orders import Order
 from liexpress.domain.models.products import Product
 
 
@@ -19,3 +20,9 @@ class Repository(ABC):
         Add new product.
         """
         pass
+
+    @abstractmethod
+    def store_order(self, order: Order):
+        """
+        Store new order
+        """
