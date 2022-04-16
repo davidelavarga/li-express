@@ -41,6 +41,8 @@ class InMemoryRepository(Repository):
             raise ProductAlreadyRequested(
                 f"Product {order.product.product_id} already requested for reservation {order.reservation_id}"
             )
+
+        order.product.orders += 1
         self._orders.append(order)
 
     def _get_product(self, new: Product):
