@@ -10,16 +10,18 @@ from fastapi.security import APIKeyHeader
 
 from liexpress.bootstrap import configure_inject
 from liexpress.domain.actions.create_product import ProductCreator
+from liexpress.domain.actions.order_product import OrderProduct
 from liexpress.domain.actions.product_detail import ProductDetail
 from liexpress.domain.actions.products_list import ProductList
 from liexpress.domain.models.exceptions import ActiveProductNotFound, InputException
 from liexpress.domain.models.products import Configuration as DomConfig
-from liexpress.domain.models.products import Product
 from liexpress.entrypoints.fastapi.models import (
     Configuration,
     DetailProductResponse,
     NewProductRequest,
     NewProductResponse,
+    OrderProductRequet,
+    OrderProductResponse,
     PlainProductResponse,
 )
 
@@ -146,3 +148,24 @@ async def create_product(
     )
 
     return NewProductResponse(product_id=product_id)
+
+
+@app.post(
+    "/reservations/{reservation_id}/products/{product_id}/order",
+    response_model=OrderProductResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Request an order for given product",
+)
+async def order_product(
+    reservation_id: int,
+    product_id: int,
+    request: OrderProductRequet,
+    api_key: APIKey = Depends(verify_api_key),
+):
+    order_id = OrderProduct()(
+        reservation_id=reservation_id,
+        product_id=product_id,
+        configurations=[DomConfig(c.name, c.type) for c in request.order_fields],
+    )
+
+    return OrderProductResponse(order_id=order_id)

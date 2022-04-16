@@ -42,7 +42,7 @@ class OrderProduct:
             raise ProductAlreadyHasReservation(
                 f"Reservation {reservation_id} already has product {product_id}"
             )
-        if not product.check_configuration(configurations):
+        if not product.check_configurations(configurations):
             raise BadConfigurationError(
                 f"Configurations {configurations} does not match with product configurations: {product.configurations} "
             )
