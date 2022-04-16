@@ -1,6 +1,6 @@
 import pytest
 
-from liexpress.adapters.data_provider.in_memory_criteria import Criteria
+from liexpress.adapters.repository.in_memory_criteria import Criteria
 from liexpress.domain.models.exceptions import OrderCriteriaNotSupported
 
 

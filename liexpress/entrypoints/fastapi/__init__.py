@@ -2,6 +2,7 @@ import logging
 import os
 from http import HTTPStatus
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security, status
 from fastapi.openapi.models import APIKey
@@ -114,7 +115,7 @@ async def get_products(
     summary="Get product detail for the given product_id, including place holders",
 )
 async def get_product_detal(
-    product_id: int,
+    product_id: UUID,
     api_key: APIKey = Depends(verify_api_key),
 ):
     p = ProductDetail()(product_id)
@@ -131,16 +132,19 @@ async def get_product_detal(
     )
 
 
-@app.post(
-    "/products",
+@app.put(
+    "/products/{product_id}",
     response_model=NewProductResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create new product and return the product id",
 )
 async def create_product(
-    request: NewProductRequest, api_key: APIKey = Depends(verify_api_key)
+    product_id: UUID,
+    request: NewProductRequest,
+    api_key: APIKey = Depends(verify_api_key),
 ):
     product_id = ProductCreator()(
+        product_id=str(product_id),
         name=request.name,
         description=request.description,
         price=request.price,

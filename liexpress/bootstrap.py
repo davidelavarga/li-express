@@ -7,7 +7,7 @@ from liexpress.domain.ports import Repository
 
 
 def dev_config(binder):
-    from liexpress.adapters.data_provider.in_memory import InMemoryRepository
+    from liexpress.adapters.repository.in_memory import InMemoryRepository
 
     binder.bind(Repository, InMemoryRepository())
 
