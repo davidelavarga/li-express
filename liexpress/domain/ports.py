@@ -17,7 +17,7 @@ class Repository(ABC):
     @abstractmethod
     def add_product(self, new: Product) -> int:
         """
-        Add new product.
+        Add new product or update if it exists
         """
         pass
 

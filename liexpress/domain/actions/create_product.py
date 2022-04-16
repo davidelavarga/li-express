@@ -16,6 +16,7 @@ class ProductCreator:
 
     def __call__(
         self,
+        product_id: str,
         name: str,
         description: str,
         price: str,
@@ -24,7 +25,7 @@ class ProductCreator:
         logging.info(f"Creating new product {name} ..")
 
         new = Product(
-            product_id=str(uuid4()),
+            product_id=product_id,
             name=name.lower(),
             description=description,
             price=price,

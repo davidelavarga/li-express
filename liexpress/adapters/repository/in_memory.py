@@ -24,10 +24,12 @@ class InMemoryRepository(Repository):
 
     def add_product(self, new: Product) -> int:
         """
-        Add new product
+        Add new product or update if it exists
         """
+        to_update = self._get_product(new)
+        self._products.remove(to_update)
         self._products.append(new)
-        return new.product_id
+        return to_update.product_id
 
     def store_order(self, order: Order):
         """
@@ -38,6 +40,12 @@ class InMemoryRepository(Repository):
                 f"Product {order.product.product_id} already requested for reservation {order.reservation_id}"
             )
         self._orders.append(order)
+
+    def _get_product(self, new: Product):
+        for p in self._products:
+            if p.product_id == new.product_id:
+                return p
+        return new
 
     def _in_memory_products(self) -> List[Product]:
         surf = Product(
