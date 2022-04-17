@@ -68,7 +68,11 @@ def test_get_products_by_reservation_id():
         limit=10,
         offset=0,
         filters=[
-            Filter("reservations", FilterOperator.IN, 1),
+            Filter(
+                "reservations",
+                FilterOperator.IN,
+                "1092a4bd-0e7a-42cc-ab12-12d7155ee772",
+            ),
         ],
     )
 
