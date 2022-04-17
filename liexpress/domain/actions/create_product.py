@@ -1,7 +1,6 @@
 import logging
 from datetime import date
 from typing import List
-from uuid import uuid4
 
 import inject
 
