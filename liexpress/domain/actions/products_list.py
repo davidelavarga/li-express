@@ -20,6 +20,7 @@ class ProductList:
             limit=10,
             offset=0,
             filters=[
+                Filter("reservation_exists", FilterOperator.IN, reservation_id),
                 Filter("reservations", FilterOperator.IN, reservation_id),
                 Filter("active", FilterOperator.IDEQ, active),
             ],

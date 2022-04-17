@@ -18,21 +18,39 @@ class InMemoryCriteriaConverter:
 
     @classmethod
     def convert(cls, criteria: Criteria):
-        return lambda x: cls._convert(x, criteria)
+        return lambda x, y: cls._convert(x, y, criteria)
 
     @classmethod
-    def _convert(cls, collection: List[Product], criteria: Criteria):
+    def _convert(
+        cls, products: List[Product], reservations: List[str], criteria: Criteria
+    ):
         for my_filter in criteria.filters:
-            collection = cls._filter_products(collection, my_filter)
+            if my_filter.field == "reservation_exists":
+                reservations = cls._filter_reservations(reservations, my_filter)
+            else:
+                products = cls._filter_products(products, my_filter)
 
         if criteria.order:
-            collection = sorted(
-                collection,
+            products = sorted(
+                products,
                 key=lambda x: getattr(x, criteria.order),
                 reverse=(criteria.order == "orders"),
             )
 
-        return collection[criteria.offset : criteria.offset + criteria.limit]
+        return products[criteria.offset : criteria.offset + criteria.limit]
+
+    @classmethod
+    def _filter_reservations(cls, reservations: List[str], my_filter: Filter):
+        reservations = list(
+            filter(
+                lambda x: cls.OPERATORS[my_filter.operator](x, my_filter.value),
+                reservations,
+            )
+        )
+        if not reservations:
+            raise ReservationIdNotFound(f"Reservation {my_filter.value} not found")
+
+        return reservations
 
     @classmethod
     def _filter_products(cls, collection: List[Product], my_filter: Filter):
@@ -44,13 +62,8 @@ class InMemoryCriteriaConverter:
                 collection,
             )
         )
-        if not collection and my_filter.field == "reservations":
-            raise ReservationIdNotFound(f"Reservation {my_filter.value} not found")
 
         if not collection and my_filter.field == "active":
             raise ActiveProductNotFound("No active products found")
-
-        if not collection and my_filter.field == "product_id":
-            raise ProductNotFound(f"Product {my_filter.value} not found")
 
         return collection

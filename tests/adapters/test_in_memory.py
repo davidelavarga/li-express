@@ -57,9 +57,8 @@ def test_get_products_by_id_not_found():
             Filter("product_id", FilterOperator.EQ, 6),
         ],
     )
-    with pytest.raises(ProductNotFound):
-        im = InMemoryRepository()
-        im.get_products(criteria)[0]
+    im = InMemoryRepository()
+    im.get_products(criteria) == []
 
 
 def test_get_products_by_reservation_id():
@@ -92,13 +91,16 @@ def test_get_products_by_reservation_id_reservation_not_found():
         limit=10,
         offset=0,
         filters=[
-            Filter("reservations", FilterOperator.IN, 5),
+            Filter(
+                "reservations",
+                FilterOperator.IN,
+                "b94aee80-6df1-40d5-8e4a-99eb533e9258",
+            ),
         ],
     )
 
-    with pytest.raises(ReservationIdNotFound):
-        im = InMemoryRepository()
-        im.get_products(criteria)
+    im = InMemoryRepository()
+    assert im.get_products(criteria) == []
 
 
 def test_add_new_product(all_products_criteria: Criteria):

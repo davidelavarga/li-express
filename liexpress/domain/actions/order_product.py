@@ -5,7 +5,7 @@ from uuid import uuid4
 import inject
 
 from liexpress.domain.models.criteria import Criteria, Filter, FilterOperator
-from liexpress.domain.models.exceptions import BadConfigurationError
+from liexpress.domain.models.exceptions import BadConfigurationError, ProductNotFound
 from liexpress.domain.models.orders import Order
 from liexpress.domain.models.products import Configuration
 from liexpress.domain.ports import Repository
@@ -24,17 +24,21 @@ class OrderProduct:
     ):
         logging.info(f"Ordering product {product_id} ..")
 
-        product = self.repo.get_products(
+        products = self.repo.get_products(
             criteria=Criteria(
                 order=None,
                 limit=1,
                 offset=0,
                 filters=[
+                    Filter("reservation_exists", FilterOperator.IN, reservation_id),
                     Filter("product_id", FilterOperator.EQ, product_id),
                 ],
             )
-        )[0]
+        )
+        if not products:
+            raise ProductNotFound(f"Product {product_id} not found")
 
+        product = products[0]
         if not product.check_configurations(configurations):
             raise BadConfigurationError(
                 f"Configurations {configurations} does not match with product configurations: {product.configurations} "
