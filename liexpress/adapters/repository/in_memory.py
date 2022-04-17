@@ -12,7 +12,7 @@ from liexpress.domain.ports import Repository
 class InMemoryRepository(Repository):
     def __init__(self):
         self._products = self._in_memory_products()
-        self._in_memory_reservations()
+        self._reservations = self._in_memory_reservations()
         self._orders = []
 
     def get_products(self, criteria: Criteria) -> List[Product]:
@@ -20,7 +20,7 @@ class InMemoryRepository(Repository):
         Get stored products.
         """
         query = InMemoryCriteriaConverter().convert(criteria)
-        return query(self._products)
+        return query(self._products, self._reservations)
 
     def add_product(self, new: Product) -> int:
         """
@@ -122,3 +122,7 @@ class InMemoryRepository(Repository):
         reservation1 = "1092a4bd-0e7a-42cc-ab12-12d7155ee772"
         brunch.reservations.append(reservation1)
         museum.reservations.append(reservation1)
+
+        reservation2 = "20a3d0a3-5297-4d64-a161-0f2cc29590df"
+
+        return [reservation0, reservation1, reservation2]
