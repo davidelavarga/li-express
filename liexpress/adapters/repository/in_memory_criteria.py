@@ -26,7 +26,11 @@ class InMemoryCriteriaConverter:
             collection = cls._filter_products(collection, my_filter)
 
         if criteria.order:
-            collection = sorted(collection, key=lambda x: getattr(x, criteria.order))
+            collection = sorted(
+                collection,
+                key=lambda x: getattr(x, criteria.order),
+                reverse=(criteria.order == "orders"),
+            )
 
         return collection[criteria.offset : criteria.offset + criteria.limit]
 
