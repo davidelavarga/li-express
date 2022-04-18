@@ -28,7 +28,7 @@
 
 ---
 ## Hexagonal Architecture
-Hexagonal Architecture has been used in this project. It has been implemented with dependency injection. This dependency injection is made by [bootstap.py](./liexpress/bootstrap.py) and its function _configure_inject()_. The injection selected is based on an environment variable called **ENV**. Possible values: "dev"
+Hexagonal Architecture has been used in this project. It has been implemented with dependency injection. This dependency injection is made by [bootstap.py](./liexpress/bootstrap.py) and its function ```configure_inject()```. The injection selected is based on an environment variable called **ENV**. Possible values: "dev"
 > ENV=dev
 
 Product samples are treated as a dependency in order to easily replace a database.
@@ -36,10 +36,10 @@ Product samples are treated as a dependency in order to easily replace a databas
 ---
 ## Configuration
 
-A YAML config file is used in this project. In order to use it CONFIG_PATH environent variable should be set.
+A YAML config file is used in this project. In order to use it **CONFIG_PATH** environent variable should be set.
 > CONFIG_PATH=config.yaml
 
-The configurations stored in the config file are loaded with the method called _get_config()_ in [config_loader.py](./liexpress/utils/config_loader.py) and they could be used as a python dictionary.
+The configurations stored in the config file are loaded with the method called ```get_config()``` in [config_loader.py](./liexpress/utils/config_loader.py) and they could be used as a python dictionary.
 
 ---
 ## Fast API
@@ -73,6 +73,22 @@ To make a request sending this API KEY, a header should be set:
     |---------------------------|------------------------------------|
     | Unhandled Exceptions      | Any unhandled exception            |
 
+---
+## Pre-commit
+### Hooks
+Pre-commit-hooks are used for code styling and consistency, formatting, typing… Concretely:
+- [black](https://github.com/psf/black): Code formating
+- [Flake8](https://flake8.pycqa.org/): Code linting
+- [isort](https://github.com/PyCQA/isort): Import sorting
+- [pyupgrade](https://github.com/asottile/pyupgrade): Automatically upgrade syntax for newer versions
+- [safety](https://github.com/pyupio/safety): Check security vulnerabilities in installed dependencies
+
+### Installation
+1. Install pre-commit ```pip install pre-commit```
+2. Add pre-commit to requirements.txt
+3. Execute ```pre-commit install``` this will install git hooks in .git/ directory of the project
+4. Test with ```pre-commit run --all-files```
+
 
 
 ---
@@ -85,7 +101,7 @@ To make a request sending this API KEY, a header should be set:
 
 
 ---
-## Product IDs and Reservation IDs
+## In-memory Product IDs and Reservation IDs
 
 ### Products
 
